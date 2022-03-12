@@ -1,23 +1,16 @@
-import logo from './logo.svg';
 import './App.css';
-
+import 'bootstrap/dist/css/bootstrap.min.css'
+import AddEmployeeButton from './components/buttons/AddEmployeeButton';
+import InputForm from './components/inputForm/InputForm';
+import OutputTable from './components/outputTable/OutputTable';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <h1 style={{color:'#1d3557'}} className='pt-2 display-5'>Employees List</h1>
+    <div className="border-bottom mt-3 w-75 m-auto"></div>
+    <AddEmployeeButton />
+    <InputForm />
+    <OutputTable />
     </div>
   );
 }
