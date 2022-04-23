@@ -1,86 +1,238 @@
-import react, { useState } from "react";
-import React from "react";
-import {data} from "../outputTable/OutputTable";
+import { Alert } from "bootstrap";
+import React, { useState } from "react";
+import { v4 } from "uuid";
+import { data } from "../../constants/Constants";
 
 export default function InputForm() {
+  const [employees, setEmployees] = useState(data);
+
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [designation, setDesignation] = useState("");
-  const [employees, setEmployees] = useState(data);
+  const [password, setPassword] = useState("");
   const [isUpdate, setIsUpdate] = useState(false);
   const [updateUid, setUpdateUid] = useState(0);
-  const onChangeNameHandler = (e) => {
-    console.log("event---", e.target.value);
-    setUserName(e.target.value);
+  const onSubmitHandler = () => {
+    let employee = {
+      uid: v4(),
+      name: userName,
+      email: email,
+      designation: designation,
+      password: password,
+    };
+    if (!userName || !email || !designation || !password) {
+      alert("All inputs are REQUIRED!");
+    } else {
+      setUserName("");
+      setDesignation("");
+      setEmail("");
+      setPassword("");
+      setEmployees([...employees, employee]);
+    }
   };
+  const onResetHandler = () => {
+    setUserName("");
+    setDesignation("");
+    setEmail("");
+    setPassword("");
+  };
+  const onUpdateHandler = (item) => {
+    setIsUpdate(true);
+    setUserName(item.name);
+    setDesignation(item.designation);
+    setEmail(item.email);
+    setPassword(item.password);
+    setUpdateUid(item.uid);
+  };
+  const onDeleteHandler = (uid) => {
+    let newEmployees = employees.filter((employee) => employee.uid !== uid);
+    setEmployees(newEmployees);
+  };
+  const onCtaUpdate = () => {
+    let employee = {
+      uid: v4(),
+      name: userName,
+      email: email,
+      designation: designation,
+      password: password,
+    };
 
+    let updatedEmployees = employees.map((item) => {
+      if (item.uid === updateUid) {
+        return employee;
+      } else {
+        return item;
+      }
+    });
+    setEmployees(updatedEmployees);
+    setUserName("");
+    setDesignation("");
+    setEmail("");
+    setPassword("");
+    isUpdate(false);
+  };
   return (
-    <div className="d-flex">
-      <div className="col-md-5 shadow p-3 mb-5 bg-body rounded d-flex align-items-center mx-3">
-        <h1
-          style={{
-            color: "#1d3557",
-          }}
-          className="display-5"
-        >
-          Welcome! to Tect Cat Solutions
-        </h1>
+    <div>
+      <div
+        className="modal fade"
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                Employee Data
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div className="row mb-3">
+                <div className="col-8">
+                  <input
+                    type="text"
+                    value={userName}
+                    onChange={(e) => {
+                      setUserName(e.target.value);
+                    }}
+                    className="form-control"
+                    id="userName"
+                    placeholder="User name"
+                    aria-label="User name"
+                  ></input>
+                </div>
+
+                <div className="col-4">
+                  <input
+                    type="text"
+                    value={designation}
+                    onChange={(e) => {
+                      setDesignation(e.target.value);
+                    }}
+                    className="form-control"
+                    id="designation"
+                    placeholder="Designation"
+                  ></input>
+                </div>
+              </div>
+
+              <div className="mb-3 row">
+                <div className="">
+                  <input
+                    type="text"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+                    className="form-control"
+                    id="email"
+                    placeholder="Email"
+                  ></input>
+                </div>
+              </div>
+              <div className=" row">
+                <div className="">
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                    className="form-control"
+                    id="inputPassword"
+                    placeholder="Password"
+                  ></input>
+                </div>
+              </div>
+              <div className=" row mb-3"></div>
+              <div className="row"></div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={onResetHandler}
+              >
+                Reset
+              </button>
+              {isUpdate ? (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => onCtaUpdate()}
+                >
+                  Update
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={onSubmitHandler}
+                >
+                  Submit
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div className="col-md-5 container-fluid w-50 d-flex flex-column ">
-        <div class="row mb-3">
-          <div class="col-8">
-            <input
-              onChange={(e) => setUsername(e.target.value)}
-              value={userName}
-              type="text"
-              class="form-control"
-              id="userName"
-              placeholder="User name"
-              aria-label="User name"
-            ></input>
-          </div>
-
-          <div className="col-4">
-            <input
-              type="text"
-              class="form-control"
-              id="designation"
-              placeholder="Designation"
-            ></input>
-          </div>
-        </div>
-
-        <div class="mb-3 row">
-          <div class="">
-            <input
-              type="text"
-              class="form-control"
-              id="email"
-              placeholder="Email"
-            ></input>
-          </div>
-        </div>
-        <div class=" row">
-          <div class="">
-            <input
-              type="password"
-              class="form-control"
-              id="inputPassword"
-              placeholder="Password"
-            ></input>
-          </div>
-        </div>
-        <div class=" row mb-3"></div>
+      <div className="container">
         <div className="row">
-          <div class="d-grid gap-1 d-md-flex justify-content-md-end">
-            <button class="btn btn-outline-primary me-md-1" type="button">
-              Submit
-            </button>
-            <button class="btn btn-outline-danger" type="button">
-              Reset
-            </button>
-          </div>
+          <h1 className="display-5">List of Employees</h1>
+
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Designation</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {employees.map((item, index) => {
+                return (
+                  <tr scope="row">
+                    <td>{index + 1}</td>
+                    <td>{item.name}</td>
+                    <td>{item.email}</td>
+                    <td>{item.designation}</td>
+                    <td>
+                      <button
+                        className="btn btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop"
+                        onClick={() => onUpdateHandler(item)}
+                      >
+                        Update
+                      </button>
+                      <button
+                        className="btn btn-outline-danger mx-2"
+                        onClick={() => onDeleteHandler(item.uid)}
+                      >
+                        Delete
+                      </button>
+                      <button className="btn btn-outline-primary px-2">
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
